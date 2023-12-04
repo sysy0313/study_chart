@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>range_bar</title>
+
+    <script src="../assets/js/jquery-3.4.1.min.js"></script>
+    <script src="../assets/js/Chart.min.3.4.1.js"></script>
+    <!-- <script src="../assets/js/Chart.min.js"></script> -->
+    <!-- <script src="../assets/js/chart(v3).js"></script> -->
+
+    <style>
+        #wrap {width: 800px; margin: 0 auto;}
+        input[type="range"] {width: 100%;}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <div class="chart">
+            <!-- 수정된 부분: canvas 요소에 id 추가 -->
+            <canvas id="barChart"></canvas>
+            <div class="custom_legend" id="barChartLegend"></div>
+        </div>
+        <input type="range" name="" id="range" value="0">
+    </div>
+
+    <script>
+        const range = document.querySelector('#range');
+        const weeks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+        const data = [100, 112, 32, 41, 65, 56, 77, 28, 89, 110, 101, 121, 133, 14, 71, 61, 17, 130, 92, 27, 22, 82, 23, 124, 25];
+
+        $(function(){
+
+            let barChart = null;
+
+            function initializeChart() {
+                const ctx = document.getElementById('barChart').getContext('2d');
+                barChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: weeks,
+                        datasets: [{
+                            label: '',
+                            data: data,
+                            backgroundColor: ['red', 'orange', 'green', 'blue']
+                        }]
+                    },
+                    options: {
+                        plugins: {},
+                        scales: {
+                            x: {
+                                ticks: {
+                                    min: weeks[0],
+                                    max: weeks[6]
+                                }
+                            },
+                            y: {}
+                        }
+                    }
+                });
+            }
+
+            function updateChart(value) {
+                const max = weeks.length;
+                const rangeStart = Math.floor((max - 7) * (value / 100));
+
+                barChart.config.data.labels = weeks.slice(rangeStart, rangeStart + 7);
+                barChart.config.data.datasets[0].data = data.slice(rangeStart, rangeStart + 7);
+
+                barChart.update();
+            }
+
+            initializeChart();
+
+            if (range) {
+                range.addEventListener('input', function (e) {
+                    updateChart(e.target.value * 1);
+                });
+
+                range.value = 0;
+                updateChart(0);
+            }
+        });
+    </script>
+</body>
+</html>

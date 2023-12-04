@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>range_custom</title>
+
+    <style>
+        *{margin:0; padding:0;}
+        
+        #wrap{width:80%; margin:200px auto;}
+
+        .range_custom{width:100%; position:relative;}
+        .range_custom .range_track{height:20px; background:#ddd; position:relative; border-radius:10px;}
+        .range_custom .range_track .fill{position:absolute; left:0; height:100%; width:0; background-color:#7e65ff; border-radius:10px;}
+        .range_custom .range_track .thumb{width:30px; height:30px; border-radius:50%; background-color:#7e65ff; border:3px solid #fff; position:absolute; left:0; top:50%; transform:translate(-50%, -50%);}
+        .range_custom input[type=range]{display:block; width:100%; position:absolute; top:0; height:100%; margin:0px; cursor:pointer; -webkit-appearance:none; opacity:0;}
+        .range_custom input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; border:none; height:30px; width:30px;}
+        .range_custom input[type=range]::-moz-range-thumb{border:none; height:30px; width:30px;}
+        .range_custom input[type=range]::-ms-thumb{border:none; height:30px; width:30px;}
+        .range_custom .range_track .thumb .tooltip{display:block; position:absolute; font-size:0; width:max-content; left:50%; transform:translateX(-50%); bottom:38px;}
+        .range_custom .range_track .thumb .tooltip *{font-size:18px; font-weight:700; color:#7e65ff;}
+
+    </style>
+
+</head>
+<body>
+    <div id="wrap">
+        
+        <div class="range_custom">
+            <div class="range_track">
+                <p class="fill"></p>
+                <p class="thumb">
+                    <span class="tooltip">
+                        <span class="num"></span>
+                        <span>%</span>
+                    </span>
+                </p>
+            </div>
+            <input type="range" class="range_inp">
+        </div>
+
+
+    </div>
+
+    <script>
+        // custom_range input
+        function customRangeChg(){
+            var rangeInp = document.querySelectorAll('.range_custom .range_inp');
+            if(rangeInp.length){
+                rangeInp.forEach(function(ele){
+                    ele.addEventListener('input', rangeStyle)
+
+                    function rangeStyle(el){
+                        el = !el.target ? el : el.target;
+                        var {max, value} = el;
+                        var track = el.closest('.range_custom').querySelector('.range_track');
+                        track.querySelector('.fill').style.width = value + '%';
+                        track.querySelector('.thumb').style.left = value + '%';
+                        track.querySelector('.tooltip .num').innerHTML = value;
+                    }
+                    rangeStyle(ele);
+                })
+            }
+        }
+        customRangeChg()
+    </script>
+</body>
+</html>
