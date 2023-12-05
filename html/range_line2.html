@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>range_line2</title>
+
+    <script src="../assets/js/jquery-3.4.1.min.js"></script>
+    <script src="../assets/js/Chart.min.3.4.1.js"></script>
+    <script src="../assets/js/chart(v3).js"></script>
+
+    <style>
+        @font-face {
+            font-family:'나눔고딕';
+            src: url(../assets/font/NanumGothic.ttf);
+        }
+        *{margin:0; padding:0; font-family:'나눔고딕';}
+        #wrap{width:800px; margin:200px auto; position:relative; padding:50px 20px 20px 20px;}
+        input[type='range']{width:100%;}
+        
+
+        .range_custom{width:100%; position:relative;}
+        .range_custom .range_track{height:20px; background:#efefef; border-radius:10px; position:relative;}
+        .range_custom .range_track .fill{position:absolute; left:0; top:0; height:100%; width:0; background-color:salmon; border-radius:10px;}
+        .range_custom .range_track .thumb{position:absolute; left:0; top:50%; width:30px; height:30px; background-color:salmon; border-radius: 50%; border:3px solid #fff; transform:translate(-50%, -50%);}
+        .range_custom input[type="range"]{position:absolute; top:0; left:0; height:100%; appearance:none; opacity:0; cursor:pointer}
+        
+        .custom_legend{position:absolute; top:0; left:50%; transform:translateX(-50%)}
+        .custom_legend ul{display:flex; border:1px solid rgba(0,0,0,0.1); padding:10px; margin:0 auto;}
+        .custom_legend ul li{list-style:none; margin:0 20px; cursor:pointer; display:flex; font-weight:700; white-space:nowrap;}
+        .custom_legend ul li i{width:20px; height:20px; display:inline-block; border-radius:50%; margin-right:5px;}
+        .custom_legend li.hidden span{text-decoration:line-through;}
+
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <div class="chart">
+            <canvas id="lineChart" data-array="0"></canvas>
+            <div class="custom_legend" id="lineChartLegend"></div>
+        </div>
+        <div class="range_custom">
+            <div class="range_track">
+                <p class="fill"></p>
+                <p class="thumb"></p>
+            </div>
+            <input type="range" id="chartRange" value="0" class="range_line">
+        </div>
+    </div>
+
+
+    <script>
+        $(function(){
+            //custom_range inp
+            function customRangeChg(){
+                var rangeInp = document.querySelectorAll('.range_custom .range_line')
+                if(rangeInp.length){
+                    rangeInp.forEach(function(ele){
+                        ele.addEventListener('input', rangeStyle)
+
+                        function rangeStyle(el){
+                            el = !el.target ? el : el.target;
+                            var {max, value} = el;
+                            
+                            
+                            var track = el.closest('.range_custom').querySelector('.range_track');
+                            track.querySelector('.fill').style.width = value + '%';
+                            track.querySelector('.thumb').style.left = value + '%'
+                        }
+
+                        rangeStyle(ele);
+                    })
+                }
+            }
+           //customRangeChg()
+
+            // chart
+            var ctx, gradient;
+            const weeks = [
+                '1월 1주', '1월 2주', '1월 3주', '1월 4주',
+                '2월 1주', '2월 2주', '2월 3주', '2월 4주',
+                '3월 1주', '3월 2주', '3월 3주', '3월 4주',
+                '4월 1주', '4월 2주', '4월 3주', '4월 4주',
+                '5월 1주', '5월 2주', '5월 3주', '5월 4주',
+                '6월 1주', '6월 2주', '6월 3주', '6월 4주',
+                '7월 1주', '7월 2주', '7월 3주', '7월 4주',
+            ]
+            const data1 = [20, 15, 100, 40, 45, 74, 65, 98, 120, 5, 100, 68, 49, 88, 95, 100, 55, 56, 74, 61, 92, 88, 100, 17, 100, 50, 40, 60]
+            const data2 = data1.map((el) => el - 10).reverse();
+            const data3 = data2.map((el) => el - 10);
+            //onsole.log(data1.length)
+            //console.log(weeks.length)
+
+            const range = document.querySelector('.range_line')
+
+            const config = {
+                type:'line',
+                data:{
+                    labels:weeks,
+                    datasets:[
+                        {
+                            //type:'line',
+                            label:'주택동향',
+                            data:data1,
+                            borderColor:'salmon',
+                            pointBackgroundColor:'salmon',
+
+                        },
+                        {
+                            //type:'line',
+                            label:'실거래',
+                            data:data2,
+                            borderColor:'lightgray',
+                            pointBackgroundColor:'#fff',
+
+                        },
+                        {
+                            //type:'line',
+                            label:'매물정보',
+                            data:data3,
+                            borderColor:'skyblue',
+                            pointBackgroundColor:'#fff',
+                        },
+                        {
+                            type:'bar',
+                            label:'매매가',
+                            data:data3,
+                            borderColor:'gray',
+                            borderWidth:0,
+                            backgroundColor:'skyblue',
+                            categoryPercentage:1,
+                            //barThickness:'50',
+                            maxBarThickness:'120',
+                                                                                    
+                        }
+                    ]
+                },
+                options:{
+                    plugins:{
+                        legend:false,
+                    },
+                    scales:{
+                        y:{
+                            grid:{
+                                drawBorder:false,
+                            },
+                            ticks:{
+                                stepSize:20,
+                                
+                            },
+                            suggestedMin:0,
+                            suggestedMax:120,
+                        },
+                        x:{
+                            beginAtZero:true,
+                            grid:{
+                                offset:false,
+                                display:false,
+                                drawOnChartArea:false
+                            },
+                            ticks:{
+                                display:false,
+                            }
+                        },
+                        x1:{
+                            //beginAtZero:true,
+                            grid:{
+                                offset:false,
+                                display:false,
+                                drawBorder:false,
+                                drawOnChartArea:false
+                            },
+                            ticks:{
+                                display:true,
+                                callback:function(value,index){
+                                    value = config.data.labels[index]  //data 가 slice되었기 때문에 value를 다시 지정해줘야 원하는 값이 나옴
+                                    return value.split(' ')[1]
+                                },
+                                padding:5,
+                            },
+                        },
+                        x2:{
+                            //beginAtZero:true,
+                            grid:{
+                                offset:false,
+                                display:false,
+                                drawBorder:false,
+                                drawOnChartArea:false
+                            },
+                            ticks:{
+                                display:true,
+                                callback:function(value, index){
+                                    value = config.data.labels[index]
+                                    const val = value.split(' ');
+                                    //return val[1] === '1주' ? val[0] : '' 
+                                        if(val[1] === '1주'){
+                                            return val[0]
+                                        }
+                                },
+                                padding:10,
+                                color:'salmon',
+                                font:{
+                                    size:'20px',
+                                    weight:'bold'
+                                }
+                            }
+                        }
+                           
+
+                    },
+                    legendCallbacks:function(chart){
+                        return generateLegend(chart);
+                    },
+                    animation:{
+                        duration:2000,
+                        x:{duration:0},
+                        y:{duration:0},
+                    },
+                    
+                    layout:{
+                        padding:{
+                            left:10,
+                            right:10,
+                            top:10,
+                            bottom:0
+                        }
+                    },
+                }
+            }
+
+            config.data.datasets.forEach(function(dataset){
+                //dataset.borderWidth = 2;
+                dataset.pointRadius = 4;
+                
+                
+
+            })
+
+            var lineChart = document.querySelector('#lineChart')
+            if(lineChart){
+                const ctx = lineChart.getContext('2d');
+                lineChart = new Chart(ctx, config);
+                document.querySelector('#lineChartLegend').innerHTML = generateLegend(lineChart)
+            }
+
+            Chart.register({
+                id:'custom1',
+                afterDraw:function(chart){
+                    if(chart.canvas.id === 'lineChart'){
+                        chart.data.datasets.forEach(function(dataset, i){
+                            var ctx = chart.ctx;
+                            var meta = chart.getDatasetMeta(i);
+
+                            if(!meta.hidden){
+                                meta.data.forEach(function(element, index){
+                                    if(!element.hidden){
+                                        var positionX = element.getCenterPoint().x;
+                                        var positionY = element.tooltipPosition().y;
+
+                                        ctx.font = '700 12px 나눔고딕';
+                                        ctx.fillStyle = '#555';
+                                        ctx.textAlign = 'center';
+
+                                        ctx.fillText(dataset.data[index],positionX, positionY)
+                                    }
+                                })
+                            }
+                        })
+                    }
+                   
+                }
+              
+            })
+
+            //range 감지 이벤트
+            function changeMin(e){
+                //const {max, value} = e.target;
+                const max = weeks.length;
+                let val = e.target.value*1;
+                val = Math.floor((max - 7) * (val / 100)) + 7;
+
+                const startIndex = Math.max(0, weeks.length - val)
+                const endIndex = weeks.length;
+
+                lineChart.config.data.labels = weeks.slice(startIndex, endIndex);
+                lineChart.config.data.datasets[0].data = data1.slice(startIndex, endIndex)
+                lineChart.config.data.datasets[1].data = data2.slice(startIndex, endIndex)
+                lineChart.config.data.datasets[2].data = data3.slice(startIndex, endIndex)
+                lineChart.config.data.datasets[3].data = data3.slice(startIndex, endIndex)
+
+                console.log(startIndex, endIndex)
+                console.log(val)
+                lineChart.options.scales.x.ticks.min = lineChart.data.labels[0]
+                lineChart.options.scales.x.ticks.max = lineChart.data.labels[lineChart.data.labels.length - 1]
+                lineChart.update();
+            }
+
+            if(range){
+                range.addEventListener('input', changeMin)
+                range.addEventListener('input', customRangeChg)
+                
+                range.value = 0;
+                range.dispatchEvent(new Event('input'))
+            }
+
+            
+           
+
+        })
+
+        
+        
+    </script>
+</body>
+</html>

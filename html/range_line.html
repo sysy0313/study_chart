@@ -10,8 +10,20 @@
     <script src="../assets/js/chart(v3).js"></script>
 
     <style>
+        *{margin:0; padding:0;}
         #wrap{width:800px; margin:0 auto;}
         input[type='range']{width:100%;}
+
+        .range_custom{width:100%; position:relative;}
+        .range_custom .range_track{height:20px; background:#eee; position:relative; border-radius:10px;}
+        .range_custom .range_track .fill{position:absolute; left:0; height:100%; width:0; background-color:pink; border-radius:10px;}
+        .range_custom .range_track .thumb{width:30px; height:30px; border-radius:50%; background-color:pink; position:absolute; left:0; top:50%; transform:translate(-50%, -50%); border:3px solid #fff;}
+
+        .range_custom input[type="range"]{display:block; width:100%; position:absolute; top:0; height:100%; cursor:pointer; appearance:none; opacity:0;}
+        .range_custom input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; border:none; height:30px; width:30px;}
+        .range_custom input[type=range]::-moz-range-thumb{border:none; height:30px; width:30px;}
+        .range_custom input[type=range]::-ms-thumb{border:none; height:30px; width:30px;}
+
     </style>
 </head>
 <body>
@@ -20,7 +32,15 @@
             <canvas id="lineChart"></canvas>
             <div class="custom_legend" id="lineChartLegend"></div>
         </div>
-        <input type="range" name="" id="range" value="0">
+        <div class="range_custom">
+            <div class="range_track">
+                <p class="fill"></p>
+                <p class="thumb">
+
+                </p>
+            </div>
+            <input type="range" id="range" value="0">
+        </div>
     </div>
 
 
@@ -38,18 +58,106 @@
                 data:{
                     labels:weeks,
                     datasets:[
-                        {
+                        {   
+                            
                             data:data,
                             backgroundColor:['pink', 'skyblue', 'lightgray', 'coral']
                         }
                     ]
                 },
-                options:{}
+                options:{
+                    plugins:{
+                        legend:false,
+
+                    },
+                    scales:{
+                        x:{},
+                        y:{
+                            ticks:{
+                                stepSize:20
+                            },
+                            suggestedMin:0,
+                            suggestedMax:200
+                        }
+                    }
+                }
             }
 
-        })
 
-        const ctx = document.querySelector('#lineChart').getContext('2d');
+            const ctx = document.querySelector('#lineChart').getContext('2d');
+
+            let lineChart = new Chart(ctx, config)
+            
+            function getRangeValue(e){
+                const max = weeks.length;
+                const rangeValue = e.target.value * 1;
+
+                const rangeStart = Math.floor((max - 7) * (rangeValue / 100));
+
+                lineChart.config.data.labels = weeks.slice(rangeStart, rangeStart + 7);
+                lineChart.config.data.datasets[0].data = data.slice(rangeStart, rangeStart + 7)
+
+                lineChart.update();
+            }
+
+            if(range){
+                range.addEventListener('input', getRangeValue);
+
+                range.value = 0;
+                range.dispatchEvent(new Event('input'))
+            }
+            
+            Chart.register({
+                id:'custom1',
+                beforeDraw:function(chart){
+                    if(chart.canvas.id === 'lineChart'){
+                        chart.data.datasets.forEach(function(dataset, i){
+                            var ctx = chart.ctx;
+                            var meta = chart.getDatasetMeta(i);
+
+                            if(!meta.hidden){
+                                meta.data.forEach(function(element, index){
+                                    if(!element.hidden){
+
+                                        var positionX = element.getCenterPoint().x;
+                                        var positionY = element.tooltipPosition().y;
+
+                                        ctx.font = '700 12px 나눔고딕';
+                                        ctx.fillStyle = '#555';
+                                        ctx.textAlign = 'center';
+
+                                        ctx.fillText(dataset.data[index] + '개', positionX, positionY - 7)
+
+                                    }
+                                })
+                            }
+                        })
+                    }
+                }
+            })
+        
+
+            // custom_range input
+            function customRangeChg(){
+                var rangeInp = document.querySelectorAll('.range_custom #range');
+                if(rangeInp.length){
+                    rangeInp.forEach(function(ele){
+                        ele.addEventListener('input', rangeStyle)
+
+                        function rangeStyle(el){
+                        el = !el.target ? el : el.target;
+                        var {max, value} = el;
+                        var track = el.closest('.range_custom').querySelector('.range_track');
+                        track.querySelector('.fill').style.width = value + '%'
+                        track.querySelector('.thumb').style.left = value + '%'
+                    }
+                    rangeStyle(ele);
+                    })
+                }
+            }
+            customRangeChg()
+
+        })
         
     </script>
 </body>
