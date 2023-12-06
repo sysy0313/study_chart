@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>차트1205</title>
+
+    <link rel="stylesheet" href="../assets/css/common.css">
+
+    <script src="../assets/js/jquery-3.4.1.min.js"></script>
+    <script src="../assets/js/Chart.min.3.4.1.js"></script>
+    <script src="../assets/js/chart(v3).js"></script>
+    
+    <style>
+        @font-face {
+            font-family:'나눔고딕';
+            src: url(../assets/font/NanumGothic.ttf);
+        }
+        *{box-sizing: border-box; margin:0; padding:0; font-family:'나눔고딕'; color:#efefef;}
+        body{background:#242424;}
+        #wrapper{width:1420px; margin:100px auto; display:flex; justify-content:space-between; flex-flow:row wrap; }
+        .chart_wrap{background:#333; min-height:350px; border:2px solid #555; border-radius:4px; padding:20px; margin-bottom:10px;}
+        .chart_wrap._3{width:calc(33.33% - 20px / 3);}
+        .chart_wrap._2{width:calc(50% - 10px / 2 );}
+        .chart_box{height:300px;}
+        .chart{height:inherit;}
+        .chart_title{font-size:20px; font-weight:bold; margin-bottom:10px;}
+
+
+        /* tooltip 말풍선 모양 */#chartjs-tooltip::before{content:''; display:block; position:absolute; width:0px; height:0px; border:5px solid transparent; border-bottom:5px solid rgba(0,0,0,0.7); top:-10px; left:50%; transform:translateX(-50%)} 
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div class="chart_wrap _2">
+            <h1 class="chart_title">Tooltip 여러 줄</h1>
+            <div class="chart_box">
+                <div class="chart">
+                    <canvas id="lineChart1"></canvas>
+                    <div class="custom_legend" id="lineChart1Legend"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart_wrap _2">
+            <h1 class="chart_title">Tooltip 커스텀 | 이미지, 말풍선삼각형 추가 | 차트 데이터합</h1>
+            <div class="chart_box">
+                <div class="chart">
+                    <canvas id="lineChart2"></canvas>
+                    <div class="custom_legend" id="lineChart2Legend"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart_wrap _2">
+            <h1 class="chart_title">차트</h1>
+        </div>
+        <div class="chart_wrap _2"></div>
+        <div class="chart_wrap _2"></div>
+    </div>
+
+    <script src="../assets/js/chart_1205.js"></script>
+</body>
+</html>
