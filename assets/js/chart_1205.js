@@ -256,14 +256,15 @@ const lineChart2Config = {
                     // Display, position, and set styles for font
                     tooltipEl.style.opacity = 1;
                     tooltipEl.style.position = 'absolute';
-                    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                    tooltipEl.style.left = /* position.left */ + window.pageXOffset + tooltipModel.caretX + 'px';
+                    tooltipEl.style.top = /* position.top */ + window.pageYOffset + tooltipModel.caretY + 'px';
                     tooltipEl.style.font = bodyFont.string;
                     tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
                     tooltipEl.style.pointerEvents = 'none';
                     tooltipEl.style.transition = 'top 0.3s ease-out, left 0.3s ease-out, opacity 0.3s ease-out'
                     tooltipEl.style.backgroundColor = 'rgba(0,0,0,0.7)';
                     tooltipEl.style.padding = '5px';
+                    tooltipEl.style.minWidth = '100px';
                     tooltipEl.style.borderRadius = '5px'
                     tooltipEl.style.transform = 'translate(-50%, 17px)' // transform으로 tooltip 위치 조절
                 }
@@ -315,17 +316,311 @@ if(lineChart2){
 }
 
 const lineChart2Label = lineChart2.config.data.labels
-console.log(lineChart2Label)
+//console.log(lineChart2Label)
 
 
 // 차트의 전체 데이터 합 구하기
 const lineChart2Data = lineChart2.config.data.datasets[0].data
-console.log(lineChart2Data)
+//console.log(lineChart2Data)
 let sum = 0;
 
 for(let i = 0; i<lineChart2Data.length; i++){
     sum += lineChart2Data[i]
 }
-console.log(sum)
+//console.log(sum)
+
+Chart.register({
+    id:'lineChart2Custom',
+    afterDraw:function(chart){
+        if(chart.canvas.id === 'lineChart2'){
+            chart.data.datasets.forEach(function(dataset, i){
+                var ctx = chart.ctx;
+                var meta = chart.getDatasetMeta(i);
+
+                if(!meta.hidden){
+                    meta.data.forEach(function(element, index){
+                        if(!element.hidden){
+
+                            var positionX = element.getCenterPoint().x;
+                            var positionY = element.tooltipPosition().y;
+
+                            ctx.font = '700 12px 나눔고딕';
+                            ctx.fillStyle = white,
+                            ctx.textAlign = 'center';
+
+                            ctx.fillText(dataset.data[index], positionX, positionY-15)
+                        }
+                    })
+                }
+            })
+        }
+    }
+})
+
+//-----------------------------------------------------------------------------
+//lineChart3
+const lineChart3Labels = ['12.01/맑음','12.02/흐림','12.03/눈','12.04/흐림','12.05/맑음','12.06/흐림','12.07/비','12.08/비','12.09/눈','12.10/맑음','12.11/흐림','12.12/맑음','12.13/흐림','12.14/흐림','12.15/흐림','12.16/맑음','12.17/맑음','12.18/맑음','12.19/비','12.20/흐림','12.21/맑음','12.22/맑음','12.23/맑음','12.24/맑음','12.25/눈','12.26/맑음','12.27/눈','12.28/눈','12.29/맑음','12.30/맑음','12.31/맑음']
+
+console.log(lineChart3Labels.length, '총 라벨수')//31
+let averageData = [];
+const lineChart3Config = {
+    type:'line',
+    data:{
+        labels:lineChart3Labels,
+        datasets:[
+            {
+                label:'평균',
+                data:averageData,
+                borderColor:green,
+            },
+            {
+                label:'서울',
+                data:[15,20,47,14,31,45,50,44,30,20,25,27,14,45,12,50,44,15,14,14,36,42,25,25,22,47,25,11,19,41,33],
+                borderColor:red,
+            },
+            {
+                label:'인천',
+                data:[22,26,44,47,25,26,15,22,33,50,41,44,22,25,36,6,40,25,50,44,15,25,14,25,33,36,37,25,22,20,14],
+                borderColor:blue,
+            },
+            {
+                label:'부산',
+                data:[25,6,17,40,20,36,22,14,7,25,6,36,28,29,36,50,47,40,50,25,22,33,36,45,16,17,28,31,46,18,28],
+                borderColor:yellow
+            }
+        ]
+    },
+    options:{
+        maintainAspectRatio:false,
+        responsive:true,
+        hover:{
+            mode:'x',
+            intersect:false, // 마우스가 point에 교차하지 않아도 hover
+        },
+        plugins:{
+            legend:{
+                display:false
+            },
+            tooltip:{
+                mode:'index',
+                
+                enabled:false,
+                
+                external:function(context){
+                   // Tooltip Element
+                   var tooltipEl = document.getElementById('chartjs-tooltip2');
+                    
+                   const lineChart3Div = document.querySelector('#lineChart3').parentNode;
+
+                   
+
+                   // Create element on first render
+                   if (!tooltipEl) {
+                       tooltipEl = document.createElement('div');
+                       tooltipEl.id = 'chartjs-tooltip2';
+                       tooltipEl.innerHTML = '<table></table>';
+                       lineChart3Div.appendChild(tooltipEl);
+                   }
+
+                   // Hide if no tooltip
+                   var tooltipModel = context.tooltip;
+                   if (tooltipModel.opacity === 0) {
+                       tooltipEl.style.opacity = 0;
+                       return;
+                   }
+
+                   // Set caret Position
+                   tooltipEl.classList.remove('above', 'below', 'no-transform');
+                   if (tooltipModel.yAlign) {
+                       tooltipEl.classList.add(tooltipModel.yAlign);
+                   } else {
+                       tooltipEl.classList.add('no-transform');
+                   }
+
+                   function getBody(bodyItem) {
+                       return bodyItem.lines;
+                   }
+
+                   // Set Text
+                   if (tooltipModel.body) {
+                       var titleLines = tooltipModel.title || [];
+                       var bodyLines = tooltipModel.body.map(getBody);
 
 
+                       var innerHtml = '<thead>';
+
+                       /* titleLines.forEach(function(title) {
+                           innerHtml += '<tr><th>' + title  + '</th></tr>';
+                       }); */
+
+
+                       // label(title) 에 따라 이미지 변경
+                       titleLines.forEach(function(title){
+                           const weather = title.split('/')[1]
+                           if(weather === '맑음'){
+                               innerHtml += '<tr><th style="display:flex">' + title + i_sun + '</th></tr>';
+                           }else if(weather === '흐림'){
+                               innerHtml += '<tr><th style="display:flex">' + title + i_fog + '</th></tr>';
+                           }else if(weather === '비'){
+                               innerHtml += '<tr><th style="display:flex">' + title + i_rain + '</th></tr>';
+                           }else if(weather === '눈'){
+                               innerHtml += '<tr><th style="display:flex">' + title + i_snow + '</th></tr>';
+                           }else{
+                               innerHtml += '<tr><th style="display:flex">' + title + '</th></tr>';
+                           }
+                           
+
+                       })
+                       
+
+                       innerHtml += '</thead><tbody>';
+
+
+                       bodyLines.forEach(function(body, i) {
+                           var colors = tooltipModel.labelColors[i];
+                           var style = 'background:' + colors.backgroundColor;
+                           style += '; border-color:' + colors.borderColor;
+                           style += '; display:inline-block' ;
+                           style += '; width:10px' ;
+                           style += '; height:10px' ;
+                           style += '; border-radius:50%' ;
+                           style += '; margin-right:5px' ;
+                           style += '; border-width: 2px';
+                           var span = '<span style="' + style + '"></span>';
+
+                           innerHtml += '<tr><td style="display:flex; align-items:center">' + span + body + ' 명' + '</td></tr>';
+                       });
+
+                       
+                       innerHtml += '</tbody>';
+
+                       var tableRoot = tooltipEl.querySelector('table');
+                       tableRoot.innerHTML = innerHtml;
+                   }
+
+                   var position = context.chart.canvas.getBoundingClientRect();
+                   var bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
+
+                   // Display, position, and set styles for font
+                   tooltipEl.style.opacity = 1;
+                   tooltipEl.style.position = 'absolute';
+                   tooltipEl.style.left = /* position.left */ + window.pageXOffset + tooltipModel.caretX + 'px';
+                   tooltipEl.style.top = /* position.top  */+ window.pageYOffset + tooltipModel.caretY + 'px';
+                   tooltipEl.style.font = bodyFont.string;
+                   /* tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'; */
+                   tooltipEl.style.pointerEvents = 'none';
+                   tooltipEl.style.transition = 'top 0.3s ease-out, left 0.3s ease-out, opacity 0.3s ease-out'
+                   tooltipEl.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                   tooltipEl.style.padding = '5px';
+                   tooltipEl.style.minWidth = '100px';
+                   tooltipEl.style.borderRadius = '5px'
+                   tooltipEl.style.transform = 'translate(-50%, 20px)' // transform으로 tooltip 위치 조절
+                }
+            }
+        },
+        scales:{
+            x:{
+                grid:{
+                    drawOnChartArea:false,
+                    border:false,
+                },
+                ticks:{
+                    color:white,
+                    callback:function(value, index){
+                       value = lineChart3Config.data.labels[index];
+                       const newValue = value.split('/')[0] 
+                        return newValue;
+                    } 
+                }
+            },
+            y:{
+                grid:{
+                    drawBorder:false,
+                    color:gray,
+                    lineWidth:1,
+                },
+                ticks:{
+                    stepSize:10,
+                    color:white,
+                    padding:15,
+                }
+            }
+        },
+        layout:{
+            padding:{
+                top:40
+            }
+        },
+        lagendCallbacks:function(chart){
+            return generateLegend(chart);
+        }
+    }
+}
+
+lineChart3Config.data.datasets.forEach(function(dataset){
+    dataset.pointRadius = 2;
+    dataset.borderWidth = 1;
+    dataset.pointBackgroundColor = dataset.borderColor;
+    //dataset.hoverPointRadius = 5
+})
+        
+let lineChart3 = document.querySelector('#lineChart3')
+if(lineChart3){
+    const ctx = lineChart3.getContext('2d');
+    lineChart3 = new Chart(ctx, lineChart3Config);
+    document.querySelector('#lineChart3Legend').innerHTML = generateLegend(lineChart3)
+}
+
+console.log(lineChart3.config.data.datasets[1].data.length, '서울')
+console.log(lineChart3.config.data.datasets[2].data.length, '인천')
+console.log(lineChart3.config.data.datasets[3].data.length, '부산')
+
+
+//배열의 평균 구하기
+function lineChart3Avg(){
+    const dataLength = lineChart3.config.data.datasets.length - 1;
+    const data1 = lineChart3.config.data.datasets[1].data;
+    const data2 = lineChart3.config.data.datasets[2].data;
+    const data3 = lineChart3.config.data.datasets[3].data;
+
+    //console.log(dataLength, data1, data2, data3)
+
+    //console.log(data1[1])
+
+    for(let i=0; i<lineChart3Labels.length; i++){
+        const dataSum = data1[i] + data2[i] + data3[i];
+        const average = Math.round(dataSum/dataLength);
+        averageData.push(average)
+    }
+    console.log(averageData);
+}
+
+lineChart3Avg()
+
+lineChart3.update() //처음부터 차트에 반영이 되어 보이게 됨!
+
+console.log(lineChart3.config.data.datasets[0].data)
+
+
+
+// custom_range_inp
+function customRangeChg(){
+    var rangeInp = document.querySelectorAll('.range');
+    if(rangeInp.length){
+        rangeInp.forEach(function(ele){
+            ele.addEventListener('input', rangeStyle)
+
+            function rangeStyle(el){
+                el = !el.target ? el : el.target;
+                var {max, value} = el;
+
+                var track = el.closest('.range_custom').querySelector('.range_track');
+                track.querySelector('.fill').style.width = value + '%';
+                track.querySelector('.thumb').style.left = value + '%';
+            }
+            rangeStyle(ele);
+        })
+    }
+}
+
+customRangeChg()

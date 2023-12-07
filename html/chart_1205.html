@@ -22,12 +22,27 @@
         .chart_wrap{background:#333; min-height:350px; border:2px solid #555; border-radius:4px; padding:20px; margin-bottom:10px;}
         .chart_wrap._3{width:calc(33.33% - 20px / 3);}
         .chart_wrap._2{width:calc(50% - 10px / 2 );}
-        .chart_box{height:300px;}
-        .chart{height:inherit;}
+        .chart_box{height:300px; }
+        .chart{height:inherit; position:relative; }
         .chart_title{font-size:20px; font-weight:bold; margin-bottom:10px;}
 
-
         /* tooltip 말풍선 모양 */#chartjs-tooltip::before{content:''; display:block; position:absolute; width:0px; height:0px; border:5px solid transparent; border-bottom:5px solid rgba(0,0,0,0.7); top:-10px; left:50%; transform:translateX(-50%)} 
+        /* tooltip 말풍선 모양 */#chartjs-tooltip2::before{content:''; display:block; position:absolute; width:0px; height:0px; border:5px solid transparent; border-bottom:5px solid rgba(0,0,0,0.7); top:-10px; left:50%; transform:translateX(-50%)} 
+
+        .range{width:100%; position:absolute; top:0; left:0; height:100%; appearance:none; opacity:0; cursor:pointer;}
+        .range_custom{width:100%; position:relative; margin-top:10px;}
+        .range_custom .range_track{height:7px; background:#555; border-radius:10px; position:relative;}
+        .range_custom .range_track .fill{position:absolute; top:0; left:0; height:100%; width:0; background-color:#8ff87e; border-radius:10px;}
+        .range_custom .range_track .thumb{width:20px; height:20px; background-color:#8ff87e; border-radius:50%; position:absolute; top:50%; left:0; transform:translate(-50%, -50%); border:2px solid #555;}
+
+        .custom_legend{position:absolute; top:0; left:50%; transform:translateX(-50%)}
+        .custom_legend .legend{display:flex; justify-content:center;}
+        .custom_legend .legend li{list-style:none; cursor:pointer;}
+        .custom_legend .legend li~li{margin-left:10px;}
+        .custom_legend .legend li i{width:10px; height:10px; display:inline-block; border-radius:50%;}
+        .custom_legend .legend li.hidden span{text-decoration:line-through;}
+
+
     </style>
 </head>
 <body>
@@ -36,7 +51,7 @@
             <h1 class="chart_title">Tooltip 여러 줄</h1>
             <div class="chart_box">
                 <div class="chart">
-                    <canvas id="lineChart1"></canvas>
+                    <canvas id="lineChart1" data-array="0"></canvas>
                     <div class="custom_legend" id="lineChart1Legend"></div>
                 </div>
             </div>
@@ -45,15 +60,37 @@
             <h1 class="chart_title">Tooltip 커스텀 | 이미지, 말풍선삼각형 추가 | 차트 데이터합</h1>
             <div class="chart_box">
                 <div class="chart">
-                    <canvas id="lineChart2"></canvas>
+                    <canvas id="lineChart2" data-array="1"></canvas>
                     <div class="custom_legend" id="lineChart2Legend"></div>
                 </div>
             </div>
         </div>
         <div class="chart_wrap _2">
-            <h1 class="chart_title">차트</h1>
+            <h1 class="chart_title">배열의 평균 구하기</h1>
+            <div class="chart_box">
+                <div class="chart">
+                    <canvas id="lineChart3" data-array="2"></canvas>
+                    <div class="custom_legend" id="lineChart3Legend"></div>
+                </div>
+            </div>
+            <div class="range_custom">
+                <div class="range_track">
+                    <p class="fill"></p>
+                    <p class="thumb"></p>
+                </div>
+                <input type="range" id="lineChart3Range" class="range" value="0">
+            </div>
         </div>
-        <div class="chart_wrap _2"></div>
+        <div class="chart_wrap _2">
+            <h1 class="chart_title">차트</h1>
+            <div class="range_custom">
+                <div class="range_track">
+                    <p class="fill"></p>
+                    <p class="thumb"></p>
+                </div>
+                <input type="range" id="lineChart4Range" class="range" value="0">
+            </div>
+        </div>
         <div class="chart_wrap _2"></div>
     </div>
 
