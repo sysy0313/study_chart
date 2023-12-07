@@ -50,7 +50,7 @@ function generateLegend(chart) {
   }
 
   function legendClick(e, index, target){
-    var _t = $(target).closest(".chart").find("canvas").attr("data-array"); //canvas에 data-array를 꼭 작성해줘야 함!!
+    var _t = $(target).closest(".chart_wrap").find("canvas").attr("data-array"); //canvas에 data-array를 꼭 작성해줘야 함!!
     var chart = Chart.instances[_t];
 
     //console.log(_t)
