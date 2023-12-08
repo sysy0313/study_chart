@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>차트1205</title>
+    <title>차트1205 v3 이후</title>
 
     <link rel="stylesheet" href="../assets/css/common.css">
 
     <script src="../assets/js/jquery-3.4.1.min.js"></script>
+    <!-- <script src="../assets/js/Chart.min.js"></script> -->
     <script src="../assets/js/Chart.min.3.4.1.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="../assets/js/chart(v3).js"></script>
     
     <style>
@@ -30,7 +32,7 @@
         /* tooltip 말풍선 모양 */#chartjs-tooltip2::before{content:''; display:block; position:absolute; width:0px; height:0px; border:5px solid transparent; border-bottom:5px solid rgba(0,0,0,0.7); top:-10px; left:50%; transform:translateX(-50%)} 
 
         .range{width:100%; position:absolute; top:0; left:0; height:100%; appearance:none; opacity:0; cursor:pointer;}
-        .range_custom{width:100%; position:relative; margin-top:10px;}
+        .range_custom{width:100%; position:relative; margin-top:10px; /* transform:rotate(180deg) */; z-index:0}
         .range_custom .range_track{height:7px; background:#555; border-radius:10px; position:relative;}
         .range_custom .range_track .fill{position:absolute; top:0; left:0; height:100%; width:0; background-color:#8ff87e; border-radius:10px;}
         .range_custom .range_track .thumb{width:20px; height:20px; background-color:#8ff87e; border-radius:50%; position:absolute; top:50%; left:0; transform:translate(-50%, -50%); border:2px solid #555;}

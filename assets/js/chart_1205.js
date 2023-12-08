@@ -359,10 +359,21 @@ Chart.register({
 
 //-----------------------------------------------------------------------------
 //lineChart3
+//setup
 const lineChart3Labels = ['12.01/맑음','12.02/흐림','12.03/눈','12.04/흐림','12.05/맑음','12.06/흐림','12.07/비','12.08/비','12.09/눈','12.10/맑음','12.11/흐림','12.12/맑음','12.13/흐림','12.14/흐림','12.15/흐림','12.16/맑음','12.17/맑음','12.18/맑음','12.19/비','12.20/흐림','12.21/맑음','12.22/맑음','12.23/맑음','12.24/맑음','12.25/눈','12.26/맑음','12.27/눈','12.28/눈','12.29/맑음','12.30/맑음','12.31/맑음']
 
-console.log(lineChart3Labels.length, '총 라벨수')//31
+//console.log(lineChart3Labels.length, '총 라벨수')//31
 let averageData = [];
+
+// 차트를 slice해주기 위해 배열 먼저 생성 후 차트에 적용
+const lineChart3Data1 = [15,20,47,14,31,45,50,44,30,20,25,27,14,45,12,50,44,15,14,14,36,42,25,25,22,47,25,11,19,41,33]
+const lineChart3Data2 = [22,26,44,47,25,26,15,22,33,50,41,44,22,25,36,6,40,25,50,44,15,25,14,25,33,36,37,25,22,20,14]
+const lineChart3Data3 = [25,6,17,40,20,36,22,14,7,25,6,36,28,29,36,50,47,40,50,25,22,33,36,45,16,17,28,31,46,18,28]
+
+//animaition setup
+let delayed; //undefined
+
+
 const lineChart3Config = {
     type:'line',
     data:{
@@ -375,17 +386,17 @@ const lineChart3Config = {
             },
             {
                 label:'서울',
-                data:[15,20,47,14,31,45,50,44,30,20,25,27,14,45,12,50,44,15,14,14,36,42,25,25,22,47,25,11,19,41,33],
+                data:lineChart3Data1,
                 borderColor:red,
             },
             {
                 label:'인천',
-                data:[22,26,44,47,25,26,15,22,33,50,41,44,22,25,36,6,40,25,50,44,15,25,14,25,33,36,37,25,22,20,14],
+                data:lineChart3Data2,
                 borderColor:blue,
             },
             {
                 label:'부산',
-                data:[25,6,17,40,20,36,22,14,7,25,6,36,28,29,36,50,47,40,50,25,22,33,36,45,16,17,28,31,46,18,28],
+                data:lineChart3Data3,
                 borderColor:yellow
             }
         ]
@@ -514,6 +525,7 @@ const lineChart3Config = {
                    tooltipEl.style.padding = '5px';
                    tooltipEl.style.minWidth = '100px';
                    tooltipEl.style.borderRadius = '5px'
+                   tooltipEl.style.zIndex = '10'
                    tooltipEl.style.transform = 'translate(-50%, 20px)' // transform으로 tooltip 위치 조절
                 }
             }
@@ -530,7 +542,12 @@ const lineChart3Config = {
                        value = lineChart3Config.data.labels[index];
                        const newValue = value.split('/')[0] 
                         return newValue;
-                    } 
+                    },
+                    padding:10,
+                    font:{
+                        size:12
+                    },
+                    align:'inner'
                 }
             },
             y:{
@@ -548,8 +565,12 @@ const lineChart3Config = {
         },
         layout:{
             padding:{
-                top:40
+                top:40, bottom:0, left:10, right:10
             }
+        },
+        animation:{
+            x:{duration:0},
+            y:{duration:0}
         },
         lagendCallbacks:function(chart){
             return generateLegend(chart);
@@ -571,9 +592,9 @@ if(lineChart3){
     document.querySelector('#lineChart3Legend').innerHTML = generateLegend(lineChart3)
 }
 
-console.log(lineChart3.config.data.datasets[1].data.length, '서울')
-console.log(lineChart3.config.data.datasets[2].data.length, '인천')
-console.log(lineChart3.config.data.datasets[3].data.length, '부산')
+//console.log(lineChart3.config.data.datasets[1].data.length, '서울')
+//console.log(lineChart3.config.data.datasets[2].data.length, '인천')
+//console.log(lineChart3.config.data.datasets[3].data.length, '부산')
 
 
 //배열의 평균 구하기
@@ -592,14 +613,14 @@ function lineChart3Avg(){
         const average = Math.round(dataSum/dataLength);
         averageData.push(average)
     }
-    console.log(averageData);
+    //console.log(averageData);
 }
 
 lineChart3Avg()
 
 lineChart3.update() //처음부터 차트에 반영이 되어 보이게 됨!
 
-console.log(lineChart3.config.data.datasets[0].data)
+//console.log(lineChart3.config.data.datasets[0].data)
 
 
 
@@ -624,3 +645,55 @@ function customRangeChg(){
 }
 
 customRangeChg()
+
+
+const lineChart3Range = document.querySelector('#lineChart3Range')
+function lineChart3RangeChg(e){
+
+    //좁은 범위-> 넓은 범위
+    const max = lineChart3Labels.length;
+    //console.log(max)
+    let val = lineChart3Range.value*1;
+    //console.log(val , '적용전 val')
+    val = Math.floor((max - 5) * (val / 100)) + 5;
+    //console.log(val, '적용후 val')
+
+    const startIndex = Math.max(0, max - val);
+    const endIndex = max;
+
+    //console.log(startIndex,'startIndex', endIndex,'endIndex')
+
+    
+    
+    //console.log(lineChart3Labels);
+
+    lineChart3.config.data.labels = lineChart3Labels.slice(startIndex, endIndex);
+    
+    //data를 따로 넣지 않아도 차트에 반영이 되지만 로딩하는 시간이 걸림
+    
+    lineChart3.config.data.datasets[0].data = averageData.slice(startIndex, endIndex)   
+    lineChart3.config.data.datasets[1].data = lineChart3Data1.slice(startIndex, endIndex)
+    lineChart3.config.data.datasets[2].data = lineChart3Data2.slice(startIndex, endIndex)
+    lineChart3.config.data.datasets[3].data = lineChart3Data3.slice(startIndex, endIndex)
+
+    lineChart3.options.scales.x.ticks.min = lineChart3.data.labels[0];
+    lineChart3.options.scales.x.ticks.max = lineChart3.data.labels[lineChart3.data.labels.length]
+
+    var animationDuration = parseInt(lineChart3Range.value);
+    lineChart3.options.animation.duration = animationDuration;
+
+    lineChart3.update()
+}   
+
+lineChart3RangeChg()
+
+//console.log(lineChart3Range)
+
+if(lineChart3Range){
+    lineChart3Range.addEventListener('input', lineChart3RangeChg);
+    lineChart3Range.addEventListener('input', customRangeChg)
+    
+
+    lineChart3Range.value = 0;
+    lineChart3Range.dispatchEvent(new Event('input'))
+}
