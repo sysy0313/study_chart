@@ -9,10 +9,9 @@
 
     <script src="../assets/js/jquery-3.4.1.min.js"></script>
     <!-- <script src="../assets/js/Chart.min.js"></script> -->
-    <script src="../assets/js/Chart.min.3.4.1.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+    <!-- <script src="../assets/js/Chart.min.3.4.1.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/js/chart(v3).js"></script>
-    
     <style>
         @font-face {
             font-family:'나눔고딕';
@@ -25,7 +24,7 @@
         .chart_wrap._3{width:calc(33.33% - 20px / 3);}
         .chart_wrap._2{width:calc(50% - 10px / 2 );}
         .chart_box{height:300px; }
-        .chart{height:inherit; position:relative; }
+        .chart{height:inherit; /* position:relative; */ }
         .chart_title{font-size:20px; font-weight:bold; margin-bottom:10px;}
 
         /* tooltip 말풍선 모양 */#chartjs-tooltip::before{content:''; display:block; position:absolute; width:0px; height:0px; border:5px solid transparent; border-bottom:5px solid rgba(0,0,0,0.7); top:-10px; left:50%; transform:translateX(-50%)} 
@@ -37,12 +36,23 @@
         .range_custom .range_track .fill{position:absolute; top:0; left:0; height:100%; width:0; background-color:#8ff87e; border-radius:10px;}
         .range_custom .range_track .thumb{width:20px; height:20px; background-color:#8ff87e; border-radius:50%; position:absolute; top:50%; left:0; transform:translate(-50%, -50%); border:2px solid #555;}
 
-        .custom_legend{position:absolute; top:0; left:50%; transform:translateX(-50%)}
+        .custom_legend{/* position:absolute; top:0; left:50%; transform:translateX(-50%) */}
         .custom_legend .legend{display:flex; justify-content:center;}
         .custom_legend .legend li{list-style:none; cursor:pointer;}
         .custom_legend .legend li~li{margin-left:10px;}
         .custom_legend .legend li i{width:10px; height:10px; display:inline-block; border-radius:50%;}
         .custom_legend .legend li.hidden span{text-decoration:line-through;}
+
+        .row_contents{display:flex;}
+        .row_contents .chart_ticks{height:100%; display:flex; flex-flow:column nowrap; justify-content:space-between; width:80px;}
+        .row_contents .chart_ticks .ticks {margin-top:10px; line-height:20px; text-align:center;}
+        .gender_chart{width:calc(50% - 80px / 2); border:1px solid #fff; position:relative;}
+        .gender_chart.left .data{display:flex; flex-flow:column nowrap; align-items:flex-end;}
+        .gender_chart .data .bar{height:20px; background-color:#8ff87e; margin-top:10px}
+        .gender_chart.right .data .bar{background-color:#ffcb6b;}
+        .grid_left{position:absolute; height:100%;}
+        .grid_left .grid{position:absolute; height:100%; width:1px; background-color:yellow;}
+        .grid_left .grid .grid_0{top:0; right:0;}
 
 
     </style>
@@ -69,10 +79,10 @@
         </div>
         <div class="chart_wrap _2">
             <h1 class="chart_title">배열의 평균 구하기</h1>
+            <div class="custom_legend" id="lineChart3Legend"></div>
             <div class="chart_box">
                 <div class="chart">
                     <canvas id="lineChart3" data-array="2"></canvas>
-                    <div class="custom_legend" id="lineChart3Legend"></div>
                 </div>
             </div>
             <div class="range_custom">
@@ -84,17 +94,87 @@
             </div>
         </div>
         <div class="chart_wrap _2">
-            <h1 class="chart_title">차트</h1>
+            <h1 class="chart_title">range 범위 역순</h1>
+            <div class="custom_legend" id="barChart1Legend"></div>
+            <div class="chart_box">
+                <div class="chart">
+                    <canvas id="barChart1" data-array="3"></canvas>
+                </div>
+            </div>
             <div class="range_custom">
                 <div class="range_track">
                     <p class="fill"></p>
                     <p class="thumb"></p>
                 </div>
-                <input type="range" id="lineChart4Range" class="range" value="0">
+                <input type="range" id="barChart1Range" class="range" value="100">
             </div>
         </div>
-        <div class="chart_wrap _2"></div>
+        <div class="chart_wrap _2">
+            <h1 class="chart_title">100% stacked (cdn 사용)</h1>
+            <div class="custom_legend" id="barChart2Legend"></div>
+            <div class="chart_box">
+                <div class="chart">
+                    <canvas id="barChart2" data-array="4"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="chart_wrap _2">
+            <h1 class="chart_title">100% stacked (cdn사용x), tooltip labelStyle</h1>
+            <div class="custom_legend" id="barChart3Legend"></div>
+            <div class="chart_box">
+                <div class="chart">
+                    <canvas id="barChart3" data-array="5"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="chart_wrap _2">
+            <h1 class="chart_title">양방향</h1>
+            <div class="chart_box">
+                <div class="chart">
+                    <div class="row_contents">
+                        <div class="gender_chart left">
+                            <div class="data">
+                                <div class="bar" style="width:30%"></div>
+                                <div class="bar" style="width:50%"></div>
+                                <div class="bar" style="width:70%"></div>
+                                <div class="bar" style="width:35%"></div>
+                                <div class="bar" style="width:85%"></div>
+                                <div class="bar" style="width:66%"></div>
+                            </div>
+                        </div>
+                        <div class="grid left">
+                            <p class="grid grid_0"></p>
+                            <p class="grid grid_20"></p>
+                            <p class="grid grid_40"></p>
+                            <p class="grud grid_60"></p>
+                            <p class="grid grid_80"></p>
+                            <p class="grid grid_100"></p>
+                        </div>
+                        <div class="chart_ticks">
+                            <p class="ticks">60대 이상</p>
+                            <p class="ticks">50대</p>
+                            <p class="ticks">40대</p>
+                            <p class="ticks">30대</p>
+                            <p class="ticks">20대</p>
+                            <p class="ticks">10대</p>
+                        </div>
+                        <div class="gender_chart right">
+                            <div class="data">
+                                <div class="bar" style="width:30%"></div>
+                                <div class="bar" style="width:50%"></div>
+                                <div class="bar" style="width:70%"></div>
+                                <div class="bar" style="width:35%"></div>
+                                <div class="bar" style="width:85%"></div>
+                                <div class="bar" style="width:66%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-stacked100@1.0.0"></script>
 
     <script src="../assets/js/chart_1205.js"></script>
 </body>

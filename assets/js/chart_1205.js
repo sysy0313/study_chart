@@ -8,6 +8,9 @@ const mint = '#c1ffea';
 const gray = '#555';
 const white = '#efefef'
 
+const tooltip_smile = new Image(16,16);
+tooltip_smile.src = '../assets/images/smile.png'
+
 //lineChart1
 const lineChart1Config = {
     type:'line',
@@ -256,8 +259,8 @@ const lineChart2Config = {
                     // Display, position, and set styles for font
                     tooltipEl.style.opacity = 1;
                     tooltipEl.style.position = 'absolute';
-                    tooltipEl.style.left = /* position.left */ + window.pageXOffset + tooltipModel.caretX + 'px';
-                    tooltipEl.style.top = /* position.top */ + window.pageYOffset + tooltipModel.caretY + 'px';
+                    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
                     tooltipEl.style.font = bodyFont.string;
                     tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
                     tooltipEl.style.pointerEvents = 'none';
@@ -515,8 +518,8 @@ const lineChart3Config = {
                    // Display, position, and set styles for font
                    tooltipEl.style.opacity = 1;
                    tooltipEl.style.position = 'absolute';
-                   tooltipEl.style.left = /* position.left */ + window.pageXOffset + tooltipModel.caretX + 'px';
-                   tooltipEl.style.top = /* position.top  */+ window.pageYOffset + tooltipModel.caretY + 'px';
+                   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
                    tooltipEl.style.font = bodyFont.string;
                    /* tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'; */
                    tooltipEl.style.pointerEvents = 'none';
@@ -568,10 +571,10 @@ const lineChart3Config = {
                 top:40, bottom:0, left:10, right:10
             }
         },
-        animation:{
+        /* animation:{
             x:{duration:0},
             y:{duration:0}
-        },
+        }, */
         lagendCallbacks:function(chart){
             return generateLegend(chart);
         }
@@ -582,9 +585,10 @@ lineChart3Config.data.datasets.forEach(function(dataset){
     dataset.pointRadius = 2;
     dataset.borderWidth = 1;
     dataset.pointBackgroundColor = dataset.borderColor;
+
     //dataset.hoverPointRadius = 5
 })
-        
+    
 let lineChart3 = document.querySelector('#lineChart3')
 if(lineChart3){
     const ctx = lineChart3.getContext('2d');
@@ -697,3 +701,323 @@ if(lineChart3Range){
     lineChart3Range.value = 0;
     lineChart3Range.dispatchEvent(new Event('input'))
 }
+
+//---------------------------------------------------------------------------------------
+//barChart1
+const barChart1Labels = ['12.01/맑음','12.02/흐림','12.03/눈','12.04/흐림','12.05/맑음','12.06/흐림','12.07/비','12.08/비','12.09/눈','12.10/맑음','12.11/흐림','12.12/맑음','12.13/흐림','12.14/흐림','12.15/흐림','12.16/맑음','12.17/맑음','12.18/맑음','12.19/비','12.20/흐림','12.21/맑음','12.22/맑음','12.23/맑음','12.24/맑음','12.25/눈','12.26/맑음','12.27/눈','12.28/눈','12.29/맑음','12.30/맑음','12.31/맑음']
+const barChart1Data1 = [25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25]
+const barChart1Data2 = [10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10]
+const barChart1Data3 = [30,25,35,15,35,30,25,35,15,35,30,25,35,15,35,30,25,35,15,35,30,25,35,15,35,30,25,35,15,35,30]
+
+let averageData2 = []
+
+//console.log(barChart1Data1.length, barChart1Data2.length, barChart1Data3.length)
+
+const barChart1Config = {
+    type:'bar',
+    data:{
+        labels:barChart1Labels,
+        datasets:[
+            {
+                label:'평균',
+                data:averageData2,
+                type:'line',
+                borderColor:green,
+                borderWidth:2,
+                backgroundColor:green,
+                pointRadius:0
+                
+            },
+            {   
+                label:'서울',
+                data:barChart1Data1,
+                backgroundColor:red,
+            },
+            {   
+                label:'인천',
+                data:barChart1Data2,
+                backgroundColor:blue,
+            },
+            {
+                label:'부산',
+                data:barChart1Data3,
+                backgroundColor:yellow
+            }
+        ]
+    },
+    options:{
+        maintainAspectRatio:false,
+        responsive:true,
+        legendCallbacks:function(chart){
+            return generateLegend(chart)
+        },
+        plugins:{
+            legend:false,
+        },
+        layout:{
+            padding:{
+                top:40, bottom:0, left:10, right:10,
+            }
+        }
+    }
+}
+
+let barChart1 = document.querySelector('#barChart1')
+if(barChart1){
+    const ctx = barChart1.getContext('2d')
+    barChart1 = new Chart(ctx, barChart1Config)
+    document.querySelector('#barChart1Legend').innerHTML = generateLegend(barChart1)
+}
+
+//배열의 평균 구하기
+function barChart1Avg(){
+    const dataLength = barChart1.config.data.datasets.length - 1;
+    const data1 = barChart1.config.data.datasets[1].data;
+    const data2 = barChart1.config.data.datasets[2].data;
+    const data3 = barChart1.config.data.datasets[3].data;
+
+    for(let i=0; i<barChart1Labels.length; i++){
+        const dataSum = data1[i] + data2[i] + data3[i];
+        const average = Math.round(dataSum/dataLength);
+        averageData2.push(average)
+
+        //onsole.log(averageData2[i] ,i +'번')
+    }
+}
+
+barChart1Avg()
+barChart1.update() //평균값이 처음부터 차트에 적용
+
+const barChart1Range = document.querySelector('#barChart1Range')
+function barChart1RangeChg(e){
+    //넓은 범위 -> 좁은 범위
+    const max = barChart1Labels.length;
+    let val = barChart1Range.value*1;
+    val = Math.floor((max - 5) * ((100 - val) / 100)) + 5; //정방향일 때와 달라진 부분!
+
+
+    const startIndex = Math.max(0, max - val);
+    const endIndex = max;
+    
+    barChart1.config.data.labels = barChart1Labels.slice(startIndex, endIndex)
+    barChart1.config.data.datasets[0].data = averageData2.slice(startIndex, endIndex)
+    barChart1.config.data.datasets[1].data = barChart1Data1.slice(startIndex, endIndex)
+    barChart1.config.data.datasets[2].data = barChart1Data2.slice(startIndex, endIndex)
+    barChart1.config.data.datasets[3].data = barChart1Data3.slice(startIndex, endIndex)
+
+
+    //console.log(startIndex, endIndex)
+    //console.log(val)
+
+    barChart1.update()
+}
+
+if(barChart1Range){
+    barChart1Range.addEventListener('input', barChart1RangeChg);
+
+    barChart1Range.value = barChart1Labels.length
+    barChart1Range.value = 100
+    barChart1Range.dispatchEvent(new Event('input'))
+
+}
+
+//------------------------------------------------------------------------------------
+// barChart2
+Chart.register(ChartjsPluginStacked100.default);
+
+const barChart2Labels = ['12.01/맑음','12.02/흐림','12.03/눈','12.04/흐림','12.05/맑음','12.06/흐림','12.07/비','12.08/비','12.09/눈','12.10/맑음','12.11/흐림','12.12/맑음','12.13/흐림','12.14/흐림','12.15/흐림','12.16/맑음','12.17/맑음','12.18/맑음','12.19/비','12.20/흐림','12.21/맑음','12.22/맑음','12.23/맑음','12.24/맑음','12.25/눈','12.26/맑음','12.27/눈','12.28/눈','12.29/맑음','12.30/맑음','12.31/맑음']
+const barChart2Data1 = [25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25]
+const barChart2Data2 = [10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10]
+
+const data1Ratio = []
+const data2Ratio = []
+const barChart2Sum = []
+
+for(let i = 0; i<barChart2Labels.length; i++){
+    barChart2Sum[i] = barChart2Data1[i] + barChart2Data2[i]
+    
+    data1Ratio[i] = barChart2Data1[i] /  barChart2Sum[i] * 100
+    data2Ratio[i] = barChart2Data2[i] /  barChart2Sum[i] * 100
+
+}
+//console.log(data1Ratio[0], data2Ratio[0])
+
+const barChart2Config = {
+    type:'bar',
+    data:{
+        labels:barChart2Labels,
+        datasets:[
+            {   
+                label:'서울',
+                data:barChart2Data1,
+                backgroundColor:red
+            },
+            {   
+                label:'인천',
+                data:barChart2Data2,
+                backgroundColor:blue,
+            }
+        ]
+    },
+    options:{
+        maintainAspectRatio:false,
+        responsive:true,
+        plugins:{
+            legend:false,
+            stacked100:{
+                enable:true,
+                replacetooltipLabel:false,
+                precision:2 //소숫점
+            }
+        },
+        scales:{
+            x:{
+                stacked:true
+            },
+            y:{
+                stacked:true,
+                max:100,
+                beginAtZero:true,
+            }
+        },
+        layout:{
+            padding:{
+                top:20, bottom:20, left:10, right:10
+            }
+        },
+        legendCallbacks:function(chart){
+            return generateLegend(chart)
+        }
+    }
+}
+
+let barChart2 = document.querySelector('#barChart2');
+if(barChart2){
+    const ctx = barChart2.getContext('2d');
+    barChart2 = new Chart(ctx, barChart2Config)
+    document.querySelector('#barChart2Legend').innerHTML = generateLegend(barChart2)
+}
+
+//----------------------------------------------------------------------------
+//barChart3
+const tooltip_sun = new Image();
+tooltip_sun.src = '../assets/images/weather/sun.png';
+const tooltip_fog = new Image();
+tooltip_fog.src = '../assets/images/weather/fog.png';
+const tooltip_rain = new Image();
+tooltip_rain.src = '../assets/images/weather/rain.png';
+const tooltip_snow = new Image();
+tooltip_snow.src = '../assets/images/weather/snow.png';
+
+tooltip_arr = [tooltip_sun, tooltip_fog]
+
+const barChart3Data = {
+    labels : ['12.01/맑음','12.02/흐림','12.03/눈','12.04/흐림','12.05/맑음','12.06/흐림','12.07/비','12.08/비','12.09/눈','12.10/맑음','12.11/흐림','12.12/맑음','12.13/흐림','12.14/흐림','12.15/흐림','12.16/맑음','12.17/맑음','12.18/맑음','12.19/비','12.20/흐림','12.21/맑음','12.22/맑음','12.23/맑음','12.24/맑음','12.25/눈','12.26/맑음','12.27/눈','12.28/눈','12.29/맑음','12.30/맑음','12.31/맑음'],
+    datasets:[
+        {
+            label:'서울',
+            data:[25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25,40,15,20,30,25],
+            backgroundColor:red,
+        },
+        {
+            label:'인천',
+            data:[10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10,20,30,40,20,10],
+            backgroundColor:blue,
+        }
+    ]
+}
+
+//데이터 총합 계산
+const total =  barChart3Data.datasets.reduce((acc, dataset) => acc.map((val, i) => val + dataset.data[i]), Array(barChart3Data.labels.length).fill(0));
+
+//비율계산
+const barChart3Percentages = barChart3Data.datasets.map(dataset => dataset.data.map((value, i) => (value / total[i]) * 100))
+
+//차트 옵션
+const barChart3Options = {
+    maintainAspectRatio:false,
+    responsive:true,
+    scales:{
+        x:{
+            stacked:true,
+            ticks:{
+                callback:function(value, index){
+                    value = barChart3Data.labels[index];
+                    const newValue = value.split('/')[0]
+                    return newValue
+                },
+                padding:20
+            }
+        },
+            
+        y:{
+            stacked:true,
+            max:100,
+            ticks:{
+                stepSize:20
+            }
+        }
+    },
+    layout:{
+        padding:{
+            top:20, bottom:5, left:10, right:10
+        }
+    },
+    legendCallbacks:function(chart){
+        return generateLegend(chart)
+    },
+    plugins:{
+        legend:false,
+        tooltip:{
+            usePointStyle:true,
+            backgroundColor:'rgba(0,0,0,0.7)',
+            titleColor:'#fff',
+            bodyColor:'#fff',
+            padding:{
+                top:15, bottom:15, left:10, right:10
+            },
+            labelPointStyle:'circle',
+            callbacks:{
+                label:function(context){
+                    const value = Math.round(context.dataset.data[context.dataIndex])
+                    const originValue = barChart3Data.datasets[context.datasetIndex].data[context.dataIndex]; //datasets을 선택할 때는 datasetIndex, data를 선택할 때는 dataIndex
+                    return ` ${value} % (${originValue} 명)`
+                },
+                labelPointStyle:(context) => {
+                    return {
+                        pointStyle:tooltip_arr[context.datasetIndex], // 배열로 img를 묶으면 dataset에 따라 다른 tooltipStyle사용 가능!
+                        rotation:0
+                    }
+                },
+                title:function(context){
+                    const label = barChart3Data.labels[context[0].dataIndex]
+                    //console.log(label)
+                    const newLabel = label.split('/')[0]
+                   
+                    return newLabel
+                }
+            }
+        }
+    }
+};
+
+let barChart3 = document.querySelector('#barChart3');
+
+const barChart3Config = {
+    type:'bar',
+    data:{
+        labels:barChart3Data.labels,
+        datasets:barChart3Data.datasets.map((dataset, i) => ({
+            ...dataset,
+            data:barChart3Percentages[i]
+        }))
+    },
+    options:barChart3Options,
+}
+
+if(barChart3){
+    const ctx = barChart3.getContext('2d');
+    barChart3 = new Chart(ctx, barChart3Config)
+    document.querySelector('#barChart3Legend').innerHTML = generateLegend(barChart3)
+}
+
