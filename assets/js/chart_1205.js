@@ -409,7 +409,8 @@ const lineChart3Config = {
         responsive:true,
         hover:{
             mode:'x',
-            intersect:false, // 마우스가 point에 교차하지 않아도 hover
+            intersect:false, // 마우스가 point에 교차하지 않아도 hover,
+            
         },
         plugins:{
             legend:{

@@ -46,14 +46,51 @@
         .row_contents{display:flex;}
         .row_contents .chart_ticks{height:100%; display:flex; flex-flow:column nowrap; justify-content:space-between; width:80px;}
         .row_contents .chart_ticks .ticks {margin-top:10px; line-height:20px; text-align:center;}
-        .gender_chart{width:calc(50% - 80px / 2); border:1px solid #fff; position:relative;}
-        .gender_chart.left .data{display:flex; flex-flow:column nowrap; align-items:flex-end;}
-        .gender_chart .data .bar{height:20px; background-color:#8ff87e; margin-top:10px}
+        .gender_chart{width:calc(50% - 80px / 2); /* border:1px solid #fff; */ position:relative; padding-bottom:10px;}
+        .gender_chart.left .data{display:flex; flex-flow:column nowrap; align-items:flex-end; position:relative; z-index:5;}
+        .gender_chart.right .data{display:flex; flex-flow:column nowrap; align-items:flex-start; position:relative; z-index:5;}
+        .gender_chart .data .bar{height:20px; background-color:#8ff87e; margin-top:10px; position:relative; transition:width 0.2s ease-out;}
+        .gender_chart .data .bar.hidden{width:0px !important;}
+        .gender_chart .data .bar:hover{background-color:#5de76a}
+        .gender_chart .data .bar:hover .tooltip_wrap{display:block; opacity:1; }
         .gender_chart.right .data .bar{background-color:#ffcb6b;}
-        .grid_left{position:absolute; height:100%;}
-        .grid_left .grid{position:absolute; height:100%; width:1px; background-color:yellow;}
-        .grid_left .grid .grid_0{top:0; right:0;}
+        .gender_chart.right .data .bar:hover{background-color:#ffaa4d;}
+        .grid .grid{position:absolute; height:100%; width:1px; background-color:rgba(255,255,255,0.5); top:0;}
+        .grid.left .grid_0{right:0; z-index:6; background-color:#efefef;}
+        .grid.left .grid_25{right:25%;}
+        .grid.left .grid_50{right:50%;}
+        .grid.left .grid_75{right:75%;}
+        .grid.left .grid_100{right:100%; z-index:6; background-color:#efefef;}
+        .grid.right .grid_0{left:0; z-index:6; background-color:#efefef;}
+        .grid.right .grid_25{left:25%;}
+        .grid.right .grid_50{left:50%;}
+        .grid.right .grid_75{left:75%;}
+        .grid.right .grid_100{left:100%; z-index:6; background-color:#efefef;}
 
+        .grid.left .grid_0::after{content:'0'; display:block; color:rgba(255,255,255,0.5); font-size:10px; position:absolute; bottom:-20px; left:50%; transform:translateX(-50%)  }
+        .grid.left .grid_50::after{content:'50'; display:block; color:rgba(255,255,255,0.5); font-size:10px; position:absolute; bottom:-20px; left:50%; transform:translateX(-50%)  }
+        .grid.left .grid_100::after{content:'100'; display:block; color:rgba(255,255,255,0.5); font-size:10px; position:absolute; bottom:-20px; left:50%; transform:translateX(-50%)  }
+        .grid.right .grid_0::after{content:'0'; display:block; color:rgba(255,255,255,0.5); font-size:10px; position:absolute; bottom:-20px; left:50%; transform:translateX(-50%)  }
+        .grid.right .grid_50::after{content:'50'; display:block; color:rgba(255,255,255,0.5); font-size:10px; position:absolute; bottom:-20px; left:50%; transform:translateX(-50%)  }
+        .grid.right .grid_100::after{content:'100'; display:block; color:rgba(255,255,255,0.5); font-size:10px; position:absolute; bottom:-20px; left:50%; transform:translateX(-50%)  }
+
+        .tooltip_wrap{position:absolute; z-index:10; top:50%; left:50%; transform:translateX(-50%); display:none;}
+        .tooltip_wrap.active {display:block;}
+        .tooltip_wrap .tooltip{display:flex; flex-flow:column nowrap; align-items:center; background-color:rgba(0,0,0,0.7); padding:10px; border-radius:5px; font-size:11px; white-space:nowrap;}
+        .tooltip_wrap .tooltip::after{content:''; display:inline-block; border:5px solid transparent; border-bottom:5px solid rgba(0,0,0,0.7); position:absolute; top:-9px; left:50%; transform:translateX(-50%)}
+        .tooltip_wrap .tooltip strong{margin-bottom:5px;}
+        .tooltip_wrap .tooltip .tooltip_body{ display:flex; align-items:center;}
+        .tooltip_wrap .tooltip .tooltip_body .labelPoint{display:inline-block; width:10px; height:10px; background-color:#8ff87e; margin-right:3px;}
+        .gender_chart.right .tooltip_wrap .tooltip .tooltip_body .labelPoint{background-color:#ffcb6b}
+
+        .htmlLegend{margin-top:30px;}
+        .htmlLegend .legend{display:flex; justify-content:center;}
+        .htmlLegend .legend li{list-style:none; margin:5px; cursor:pointer;}
+        .htmlLegend .legend li .labelPoint{width:10px; height:10px; display:inline-block; border-radius:50%; margin-right:4px;}
+        .htmlLegend .legend li:nth-child(1) .labelPoint{background-color:#8ff87e;}
+        .htmlLegend .legend li:nth-child(2) .labelPoint{background-color:#ffcb6b;}
+        .htmlLegend .legend li.hidden {text-decoration:line-through; color:#aaa;}
+        .htmlLegend .legend li.hidden .labelPoint{background-color:#aaa;}
 
     </style>
 </head>
@@ -127,28 +164,28 @@
                 </div>
             </div>
         </div>
-        <div class="chart_wrap _2">
-            <h1 class="chart_title">양방향</h1>
+        <div class="chart_wrap _2" >
+            <h1 class="chart_title">양방향 (chart.js X)</h1>
             <div class="chart_box">
-                <div class="chart">
+                <div class="chart" style="display:flex; flex-flow:column nowrap; justify-content:center; padding:0 20px">
                     <div class="row_contents">
                         <div class="gender_chart left">
                             <div class="data">
-                                <div class="bar" style="width:30%"></div>
-                                <div class="bar" style="width:50%"></div>
-                                <div class="bar" style="width:70%"></div>
-                                <div class="bar" style="width:35%"></div>
-                                <div class="bar" style="width:85%"></div>
-                                <div class="bar" style="width:66%"></div>
+                                <div class="bar" data-label="60대이상" data-value="30" data-gender="남성"></div>
+                                <div class="bar" data-label="50대" data-value="50" data-gender="남성"></div>
+                                <div class="bar" data-label="40대" data-value="70" data-gender="남성"></div>
+                                <div class="bar" data-label="30대" data-value="35" data-gender="남성"></div>
+                                <div class="bar" data-label="20대" data-value="85" data-gender="남성"></div>
+                                <div class="bar" data-label="10대" data-value="66" data-gender="남성"></div>
                             </div>
-                        </div>
-                        <div class="grid left">
-                            <p class="grid grid_0"></p>
-                            <p class="grid grid_20"></p>
-                            <p class="grid grid_40"></p>
-                            <p class="grud grid_60"></p>
-                            <p class="grid grid_80"></p>
-                            <p class="grid grid_100"></p>
+
+                            <div class="grid left">
+                                <p class="grid grid_0"></p>
+                                <p class="grid grid_25"></p>
+                                <p class="grid grid_50"></p>
+                                <p class="grid grid_75"></p>
+                                <p class="grid grid_100"></p>
+                            </div>
                         </div>
                         <div class="chart_ticks">
                             <p class="ticks">60대 이상</p>
@@ -160,22 +197,98 @@
                         </div>
                         <div class="gender_chart right">
                             <div class="data">
-                                <div class="bar" style="width:30%"></div>
-                                <div class="bar" style="width:50%"></div>
-                                <div class="bar" style="width:70%"></div>
-                                <div class="bar" style="width:35%"></div>
-                                <div class="bar" style="width:85%"></div>
-                                <div class="bar" style="width:66%"></div>
+                                <div class="bar" data-value="20" data-label="60대이상" data-gender="여성"></div>
+                                <div class="bar" data-value="50" data-label="50대" data-gender="여성"></div>
+                                <div class="bar" data-value="35" data-label="40대" data-gender="여성"></div>
+                                <div class="bar" data-value="80" data-label="30대" data-gender="여성"></div>
+                                <div class="bar" data-value="75" data-label="20대" data-gender="여성"></div>
+                                <div class="bar" data-value="15" data-label="10대" data-gender="여성"></div>
+                            </div>
+                            <div class="grid right">
+                                <p class="grid grid_0"></p>
+                                <p class="grid grid_25"></p>
+                                <p class="grid grid_50"></p>
+                                <p class="grid grid_75"></p>
+                                <p class="grid grid_100"></p>
                             </div>
                         </div>
                     </div>
+                    <div class="htmlLegend">
+                        <ul class="legend">
+                            <li onClick="leftHide()"><i class="labelPoint"></i>남성</li>
+                            <li onClick="rightHide()"><i class="labelPoint"></i>여성</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="chart_wrap _2">
+            
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-stacked100@1.0.0"></script>
 
     <script src="../assets/js/chart_1205.js"></script>
+
+    <script>
+        //data 속성 이용하기
+
+        // 차트 내 모든 막대 선택
+        const bars = document.querySelectorAll('.gender_chart .data .bar');
+
+        // 각 막대에 대해 반복하면서 data-value 속성을 기반으로 너비 설정
+        bars.forEach(bar => { //bar는 임시변수
+            const width = bar.dataset.value + '%';
+            bar.style.width = width;
+
+            bar.innerHTML += `
+                <div class="tooltip_wrap">
+                    <div class="tooltip">
+                    <strong>${bar.dataset.label}</strong>
+                        <span class="tooltip_body">
+                            <span class="labelPoint"></span><span class="tooltipLabel">${bar.dataset.gender} : </span><span class="tooltipData">${bar.dataset.value} %</span>
+                        </span>
+                    </div>
+                </div>
+                `
+                
+            const tooltipWrap = bar.querySelector('.tooltip_wrap') //bar안에는 tooltipWrap이 하나 이기 때문에 querySelectorAll 을 사용하면 안된다.
+            const allTooltips = document.querySelectorAll('.tooltip_wrap')
+
+            bar.addEventListener('click', function(){
+                bars.forEach(otherBar => {
+                    if (otherBar !== bar) {
+                        otherBar.querySelector('.tooltip_wrap').classList.remove('active');
+                    }
+                });
+                 // 현재 bar에 대한 tooltipWrap에 'active' 클래스 추가
+                tooltipWrap.classList.toggle('active');
+            })
+           
+    })
+
+    function leftHide(){
+        const charts = document.querySelectorAll('.gender_chart.left .data .bar')
+        //console.log(charts);
+        charts.forEach(function(chart){
+            chart.classList.toggle('hidden')
+        })
+        const li = document.querySelector('.htmlLegend li:nth-child(1)')
+        li.classList.toggle('hidden')
+
+    }
+    function rightHide(){
+        const charts = document.querySelectorAll('.gender_chart.right .data .bar')
+        //console.log(charts);
+        charts.forEach(function(chart){
+            chart.classList.toggle('hidden')
+        })
+        const li = document.querySelector('.htmlLegend li:nth-child(2)')
+        li.classList.toggle('hidden')
+    }
+
+    
+    </script>
 </body>
 </html>
