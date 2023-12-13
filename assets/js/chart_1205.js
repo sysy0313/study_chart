@@ -110,9 +110,9 @@ const lineChart1Config = {
                         }else if(weatherState === '눈'){
                             stateImg.src = '../assets/images/weather/snow.png'
                         }
-                       return{
-                        pointStyle:stateImg
-                       }
+                    return{
+                    pointStyle:stateImg
+                    }
                         
                     }
                 }
@@ -452,114 +452,114 @@ const lineChart3Config = {
                 
                 external:function(context){
                    // Tooltip Element
-                   var tooltipEl = document.getElementById('chartjs-tooltip2');
+                    var tooltipEl = document.getElementById('chartjs-tooltip2');
                     
-                   const lineChart3Div = document.querySelector('#lineChart3').parentNode;
+                    const lineChart3Div = document.querySelector('#lineChart3').parentNode;
 
-                   
+                    
 
                    // Create element on first render
-                   if (!tooltipEl) {
-                       tooltipEl = document.createElement('div');
-                       tooltipEl.id = 'chartjs-tooltip2';
-                       tooltipEl.innerHTML = '<table></table>';
-                       lineChart3Div.appendChild(tooltipEl);
-                   }
+                    if (!tooltipEl) {
+                        tooltipEl = document.createElement('div');
+                        tooltipEl.id = 'chartjs-tooltip2';
+                        tooltipEl.innerHTML = '<table></table>';
+                        lineChart3Div.appendChild(tooltipEl);
+                    }
 
                    // Hide if no tooltip
-                   var tooltipModel = context.tooltip;
-                   if (tooltipModel.opacity === 0) {
-                       tooltipEl.style.opacity = 0;
-                       return;
-                   }
+                    var tooltipModel = context.tooltip;
+                    if (tooltipModel.opacity === 0) {
+                        tooltipEl.style.opacity = 0;
+                        return;
+                    }
 
                    // Set caret Position
-                   tooltipEl.classList.remove('above', 'below', 'no-transform');
-                   if (tooltipModel.yAlign) {
-                       tooltipEl.classList.add(tooltipModel.yAlign);
-                   } else {
-                       tooltipEl.classList.add('no-transform');
-                   }
+                    tooltipEl.classList.remove('above', 'below', 'no-transform');
+                    if (tooltipModel.yAlign) {
+                        tooltipEl.classList.add(tooltipModel.yAlign);
+                    } else {
+                        tooltipEl.classList.add('no-transform');
+                    }
 
-                   function getBody(bodyItem) {
-                       return bodyItem.lines;
-                   }
+                    function getBody(bodyItem) {
+                        return bodyItem.lines;
+                    }
 
                    // Set Text
-                   if (tooltipModel.body) {
-                       var titleLines = tooltipModel.title || [];
-                       var bodyLines = tooltipModel.body.map(getBody);
+                    if (tooltipModel.body) {
+                        var titleLines = tooltipModel.title || [];
+                        var bodyLines = tooltipModel.body.map(getBody);
 
 
-                       var innerHtml = '<thead>';
+                        var innerHtml = '<thead>';
 
-                       /* titleLines.forEach(function(title) {
-                           innerHtml += '<tr><th>' + title  + '</th></tr>';
+                        /* titleLines.forEach(function(title) {
+                            innerHtml += '<tr><th>' + title  + '</th></tr>';
                        }); */
 
 
                        // label(title) 에 따라 이미지 변경
-                       titleLines.forEach(function(title){
-                           const weather = title.split('/')[1]
-                           if(weather === '맑음'){
-                               innerHtml += '<tr><th style="display:flex">' + title + i_sun + '</th></tr>';
-                           }else if(weather === '흐림'){
-                               innerHtml += '<tr><th style="display:flex">' + title + i_fog + '</th></tr>';
-                           }else if(weather === '비'){
-                               innerHtml += '<tr><th style="display:flex">' + title + i_rain + '</th></tr>';
-                           }else if(weather === '눈'){
-                               innerHtml += '<tr><th style="display:flex">' + title + i_snow + '</th></tr>';
-                           }else{
-                               innerHtml += '<tr><th style="display:flex">' + title + '</th></tr>';
-                           }
-                           
+                        titleLines.forEach(function(title){
+                            const weather = title.split('/')[1]
+                            if(weather === '맑음'){
+                                innerHtml += '<tr><th style="display:flex">' + title + i_sun + '</th></tr>';
+                            }else if(weather === '흐림'){
+                                innerHtml += '<tr><th style="display:flex">' + title + i_fog + '</th></tr>';
+                            }else if(weather === '비'){
+                                innerHtml += '<tr><th style="display:flex">' + title + i_rain + '</th></tr>';
+                            }else if(weather === '눈'){
+                                innerHtml += '<tr><th style="display:flex">' + title + i_snow + '</th></tr>';
+                            }else{
+                                innerHtml += '<tr><th style="display:flex">' + title + '</th></tr>';
+                            }
+                            
 
-                       })
-                       
+                        })
+                        
 
-                       innerHtml += '</thead><tbody>';
+                        innerHtml += '</thead><tbody>';
 
 
-                       bodyLines.forEach(function(body, i) {
-                           var colors = tooltipModel.labelColors[i];
-                           var style = 'background:' + colors.backgroundColor;
-                           style += '; border-color:' + colors.borderColor;
-                           style += '; display:inline-block' ;
-                           style += '; width:10px' ;
-                           style += '; height:10px' ;
-                           style += '; border-radius:50%' ;
-                           style += '; margin-right:5px' ;
-                           style += '; border-width: 2px';
-                           var span = '<span style="' + style + '"></span>';
+                        bodyLines.forEach(function(body, i) {
+                            var colors = tooltipModel.labelColors[i];
+                            var style = 'background:' + colors.backgroundColor;
+                            style += '; border-color:' + colors.borderColor;
+                            style += '; display:inline-block' ;
+                            style += '; width:10px' ;
+                            style += '; height:10px' ;
+                            style += '; border-radius:50%' ;
+                            style += '; margin-right:5px' ;
+                            style += '; border-width: 2px';
+                            var span = '<span style="' + style + '"></span>';
 
-                           innerHtml += '<tr><td style="display:flex; align-items:center">' + span + body + ' 명' + '</td></tr>';
-                       });
+                            innerHtml += '<tr><td style="display:flex; align-items:center">' + span + body + ' 명' + '</td></tr>';
+                        });
 
-                       
-                       innerHtml += '</tbody>';
+                        
+                        innerHtml += '</tbody>';
 
-                       var tableRoot = tooltipEl.querySelector('table');
-                       tableRoot.innerHTML = innerHtml;
-                   }
+                        var tableRoot = tooltipEl.querySelector('table');
+                        tableRoot.innerHTML = innerHtml;
+                    }
 
-                   var position = context.chart.canvas.getBoundingClientRect();
-                   var bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
+                    var position = context.chart.canvas.getBoundingClientRect();
+                    var bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
 
                    // Display, position, and set styles for font
-                   tooltipEl.style.opacity = 1;
-                   tooltipEl.style.position = 'absolute';
-                   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-                   tooltipEl.style.font = bodyFont.string;
-                   /* tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'; */
-                   tooltipEl.style.pointerEvents = 'none';
-                   tooltipEl.style.transition = 'top 0.3s ease-out, left 0.3s ease-out, opacity 0.3s ease-out'
-                   tooltipEl.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                   tooltipEl.style.padding = '5px';
-                   tooltipEl.style.minWidth = '100px';
-                   tooltipEl.style.borderRadius = '5px'
-                   tooltipEl.style.zIndex = '10'
-                   tooltipEl.style.transform = 'translate(-50%, 20px)' // transform으로 tooltip 위치 조절
+                    tooltipEl.style.opacity = 1;
+                    tooltipEl.style.position = 'absolute';
+                    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                    tooltipEl.style.font = bodyFont.string;
+                  /* tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'; */
+                    tooltipEl.style.pointerEvents = 'none';
+                    tooltipEl.style.transition = 'top 0.3s ease-out, left 0.3s ease-out, opacity 0.3s ease-out'
+                    tooltipEl.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                    tooltipEl.style.padding = '5px';
+                    tooltipEl.style.minWidth = '100px';
+                    tooltipEl.style.borderRadius = '5px'
+                    tooltipEl.style.zIndex = '10'
+                    tooltipEl.style.transform = 'translate(-50%, 20px)' // transform으로 tooltip 위치 조절
                 }
             }
         },
@@ -572,8 +572,8 @@ const lineChart3Config = {
                 ticks:{
                     color:white,
                     callback:function(value, index){
-                       value = lineChart3Config.data.labels[index];
-                       const newValue = value.split('/')[0] 
+                        value = lineChart3Config.data.labels[index];
+                        const newValue = value.split('/')[0] 
                         return newValue;
                     },
                     padding:10,
@@ -1016,7 +1016,7 @@ const barChart3Options = {
                     const label = barChart3Data.labels[context[0].dataIndex]
                     //console.log(label)
                     const newLabel = label.split('/')[0]
-                   
+                    
                     return newLabel
                 }
             }
