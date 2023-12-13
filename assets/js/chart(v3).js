@@ -29,7 +29,7 @@ function generateLegend(chart) {
     for (var i = 0; i < chart.data.datasets.length; i++) {
         var type = chart.config.type;
         if(type == 'bar') {// 바 차트
-            innerHtml += `<li class="li" onClick="legendClick(event, ${i}, this)">
+            innerHtml += `<li class="li" onClick="legendClick(event, ${i}, this)" data-label="${chart.data.datasets[i].label}">
                     <i style="background-color:${chart.data.datasets[i].backgroundColor}"></i>
                     <span>
                     ${chart.data.datasets[i].label}    

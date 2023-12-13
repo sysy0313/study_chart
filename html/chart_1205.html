@@ -38,10 +38,19 @@
 
         .custom_legend{/* position:absolute; top:0; left:50%; transform:translateX(-50%) */}
         .custom_legend .legend{display:flex; justify-content:center;}
-        .custom_legend .legend li{list-style:none; cursor:pointer;}
+        .custom_legend .legend li{list-style:none; cursor:pointer; display:flex; align-items:center;}
         .custom_legend .legend li~li{margin-left:10px;}
-        .custom_legend .legend li i{width:10px; height:10px; display:inline-block; border-radius:50%;}
+        .custom_legend .legend li i{width:10px; height:10px; display:inline-block; border-radius:50%; margin-right:5px;}
         .custom_legend .legend li.hidden span{text-decoration:line-through;}
+
+        .custom_legend .legend li[data-label='맑음'].hidden span,
+        .custom_legend .legend li[data-label='흐림'].hidden span,
+        .custom_legend .legend li[data-label='비'].hidden span,
+        .custom_legend .legend li[data-label='눈'].hidden span{text-decoration-thickness:3px; text-decoration-color:red;}
+        .custom_legend .legend li[data-label='맑음'] i{background-color:unset !important; width:16px; height:16px; background-image:url(../assets/images/weather/sun.png); background-position:center center; background-size:100%; border-radius:unset; }
+        .custom_legend .legend li[data-label='흐림'] i{background-color:unset !important; width:16px; height:16px; background-image:url(../assets/images/weather/fog.png); background-position:center center; background-size:100%; border-radius:unset; }
+        .custom_legend .legend li[data-label='비'] i{background-color:unset !important; width:16px; height:16px; background-image:url(../assets/images/weather/rain.png); background-position:center center; background-size:100%; border-radius:unset; }
+        .custom_legend .legend li[data-label='눈'] i{background-color:unset !important; width:16px; height:16px; background-image:url(../assets/images/weather/snow.png); background-position:center center; background-size:100%; border-radius:unset; }
 
         .row_contents{display:flex;}
         .row_contents .chart_ticks{height:100%; display:flex; flex-flow:column nowrap; justify-content:space-between; width:80px;}
@@ -92,12 +101,14 @@
         .htmlLegend .legend li.hidden {text-decoration:line-through; color:#aaa;}
         .htmlLegend .legend li.hidden .labelPoint{background-color:#aaa;}
 
+
+        
     </style>
 </head>
 <body>
     <div id="wrapper">
         <div class="chart_wrap _2">
-            <h1 class="chart_title">Tooltip 여러 줄</h1>
+            <h1 class="chart_title">Tooltip 여러 줄, 날씨에 따른 labelPoint</h1>
             <div class="chart_box">
                 <div class="chart">
                     <canvas id="lineChart1" data-array="0"></canvas>
@@ -164,6 +175,15 @@
                 </div>
             </div>
         </div>
+        <div class="chart_wrap _2">
+            <h1 class="chart_title">차트에 이미지</h1>
+            <div class="custom_legend" id="barChart4Legend"></div>
+            <div class="chart_box">
+                <div class="chart">
+                    <canvas id="barChart4" data-array="6"></canvas>
+                </div>
+            </div>
+        </div>
         <div class="chart_wrap _2" >
             <h1 class="chart_title">양방향 (chart.js X)</h1>
             <div class="chart_box">
@@ -221,9 +241,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="chart_wrap _2">
-            
         </div>
     </div>
 

@@ -11,6 +11,15 @@ const white = '#efefef'
 const tooltip_smile = new Image(16,16);
 tooltip_smile.src = '../assets/images/smile.png'
 
+const tooltip_sun = new Image();
+tooltip_sun.src = '../assets/images/weather/sun.png';
+const tooltip_fog = new Image();
+tooltip_fog.src = '../assets/images/weather/fog.png';
+const tooltip_rain = new Image();
+tooltip_rain.src = '../assets/images/weather/rain.png';
+const tooltip_snow = new Image();
+tooltip_snow.src = '../assets/images/weather/snow.png';
+
 //lineChart1
 const lineChart1Config = {
     type:'line',
@@ -44,6 +53,9 @@ const lineChart1Config = {
                 footerFont:{
                     weight:'normal'
                 },
+                borderColor:green,
+                borderWidth:2,
+                usePointStyle:true,
                 callbacks:{
                     label:function(context){
                         const value = context.dataset.data[context.dataIndex]
@@ -51,12 +63,13 @@ const lineChart1Config = {
                         return ` 방문자수: ${value}`
                         
                     },
-                    labelColor:function(context){
+                    /* labelColor:function(context){
                         return{
                             borderRadius:5,
                             backgroundColor:context.dataset.borderColor,
                         }
-                    },
+                    }, */
+
                     /* footer: (context) => {
                         const lineArray = ['line1', 'line2', 'line3']
                         const value = context[0].dataset.data[context[0].dataIndex] //footer 에서는 context 에 index를 붙여야함
@@ -83,7 +96,23 @@ const lineChart1Config = {
                         const tooltipContent = document.createElement('div');
                         tooltipContent.appendChild(document.createTextNode(label));
                         tooltipContent.appendChild(w_sun)
-                        return label
+                        return label   
+                    },
+                    labelPointStyle:(context) =>{
+                        const weatherState = context.dataset.labels[context.dataIndex].split('/')[1]
+                        const stateImg = new Image();
+                        if(weatherState === '맑음'){
+                            stateImg.src = '../assets/images/weather/sun.png'
+                        }else if(weatherState === '흐림'){
+                            stateImg.src = '../assets/images/weather/fog.png'
+                        }else if(weatherState === '비'){
+                            stateImg.src = '../assets/images/weather/rain.png'
+                        }else if(weatherState === '눈'){
+                            stateImg.src = '../assets/images/weather/snow.png'
+                        }
+                       return{
+                        pointStyle:stateImg
+                       }
                         
                     }
                 }
@@ -901,14 +930,7 @@ if(barChart2){
 
 //----------------------------------------------------------------------------
 //barChart3
-const tooltip_sun = new Image();
-tooltip_sun.src = '../assets/images/weather/sun.png';
-const tooltip_fog = new Image();
-tooltip_fog.src = '../assets/images/weather/fog.png';
-const tooltip_rain = new Image();
-tooltip_rain.src = '../assets/images/weather/rain.png';
-const tooltip_snow = new Image();
-tooltip_snow.src = '../assets/images/weather/snow.png';
+
 
 tooltip_arr = [tooltip_sun, tooltip_fog]
 
@@ -1022,3 +1044,142 @@ if(barChart3){
     document.querySelector('#barChart3Legend').innerHTML = generateLegend(barChart3)
 }
 
+//------------------------------------------------------------------------------------
+//barChart4
+
+const barChart4Labels = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
+let barChart4Data_sun = [20,15,20,22,20,21,16,20,16,21,19,14]
+let barChart4Data_fog = [6,7,8,5,4,6,10,5,4,4,3,8]
+let barChart4Data_rain = [2,3,2,3,7,3,5,6,10,6,4,7]
+let barChart4Data_snow = [3,3,1,null,null,null,null,null,null,null,4,2]
+console.log(barChart4Labels.length, 'barchart4Label', barChart4Data_sun.length,'sun', barChart4Data_fog.length,'fog', barChart4Data_rain.length, 'rain', barChart4Data_snow.length, 'snow')
+
+weather_arr = [tooltip_sun, tooltip_fog, tooltip_rain, tooltip_snow]
+
+/* for(let i =0; i<barChart4Labels.length; i++){
+    const dataSum = barChart4Data_sun[i]+barChart4Data_fog[i]+barChart4Data_rain[i]+barChart4Data_snow[i]
+    console.log(dataSum)
+} */
+
+
+const barChart4Config = {
+    type:'bar',
+    data:{
+        labels:barChart4Labels,
+        datasets:[
+            {
+                label:'맑음',
+                data:barChart4Data_sun,
+                backgroundColor:yellow
+            },
+            {
+                label:'흐림',
+                data:barChart4Data_fog,
+                backgroundColor:purple,
+            },
+            {
+                label:'비',
+                data:barChart4Data_rain,
+                backgroundColor:blue,
+            },
+            {
+                label:'눈',
+                data:barChart4Data_snow,
+                backgroundColor:mint,
+            }
+        ]
+    },
+    options:{
+        maintainAspectRatio:false,
+        responsive:true,
+        plugins:{
+            legend:false,
+            tooltip:{
+                usePointStyle:true,
+                backgroundColor:'rgba(0,0,0,0.7)',
+                bodyColor:'#fff',
+                titleColor:'#fff',
+                bodySpacing:10,
+                callbacks:{
+                    labelPointStyle:(context) =>{
+                        return{
+                            pointStyle:weather_arr[context.datasetIndex]
+                        }
+                    }
+                }
+            }
+        },
+        layout:{
+            padding:{
+                top:20, bottom:10, left:10, right:10
+            }
+        },
+        legendCallbacks:function(chart){
+            return generateLegend(chart)
+        }
+    }
+}
+
+let barChart4 = document.querySelector('#barChart4')
+if(barChart4){
+    const ctx = barChart4.getContext('2d');
+    barChart4 = new Chart(ctx,barChart4Config);
+    document.querySelector('#barChart4Legend').innerHTML = generateLegend(barChart4)
+}
+
+Chart.register({
+    id:'barChart4Custom',
+    beforeDraw:function(chart){
+        if(chart.canvas.id === 'barChart4'){
+            chart.data.datasets.forEach(function(dataset, i){
+                var ctx = chart.ctx;
+                var meta = chart.getDatasetMeta(i);
+
+                if(!meta.hidden){
+                    meta.data.forEach(function(element, index){
+                        if(!element.hidden){
+
+                            var positionX = element.getCenterPoint().x;
+                            var positionY = chart.chartArea.bottom;
+                            var positionY1 = element.tooltipPosition().y
+    
+                            //차트에 이미지 넣기
+                            var weatherImg = new Image();
+                            //1.switch문
+                            /* switch(dataset.label){
+                                case '맑음' : weatherImg.src = '../assets/images/weather/sun.png'; break;
+                                case '흐림' : weatherImg.src = '../assets/images/weather/fog.png'; break;
+                                case '비' : weatherImg.src = '../assets/images/weather/rain.png'; break;
+                                case '눈' : weatherImg.src = '../assets/images/weather/snow.png'; break;
+                            } */
+
+                            //2.if문
+                            if(dataset.label === '맑음'){
+                                weatherImg.src = '../assets/images/weather/sun.png'
+                            }else if(dataset.label === '흐림'){
+                                weatherImg.src = '../assets/images/weather/fog.png'
+                            }else if(dataset.label === '비'){
+                                weatherImg.src = '../assets/images/weather/rain.png'
+                            }else if(dataset.label === '눈'){
+                                weatherImg.src = '../assets/images/weather/snow.png'
+                            }
+
+                            //데이터가 없을 때 이미지 없애기
+                            if(dataset.data[index] === null || dataset.data[index] === 0){weatherImg.src = '';}
+
+                            
+                            ctx.font = '700 12px 나눔고딕';
+                            ctx.fillStyle = white,
+                            ctx.textAlign = 'center';
+
+                            //ctx.fillText(dataset.data[index], positionX, positionY1 - 8)
+                            ctx.drawImage(weatherImg, positionX-6, positionY1-15, 12,12)
+
+                        }
+                    })
+                }
+            })
+        }
+    }
+})
